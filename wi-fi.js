@@ -1,6 +1,7 @@
 class WifiDetect {
   constructor() {
     this.lastPing = 0;
+    this.startAutoPing();
   }
 
   getInfo() {
@@ -17,11 +18,6 @@ class WifiDetect {
           opcode: 'getPingMs',
           blockType: Scratch.BlockType.REPORTER,
           text: 'msはいくつか？'
-        },
-        {
-          opcode: 'updatePing',
-          blockType: Scratch.BlockType.COMMAND,
-          text: 'msを計測する'
         }
       ]
     };
@@ -31,7 +27,7 @@ class WifiDetect {
     return navigator.onLine;
   }
 
-  async updatePing() {
+  async pingOnce() {
     const url = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png?" + Math.random();
     const start = performance.now();
     try {
@@ -40,6 +36,13 @@ class WifiDetect {
     } catch (e) {
       this.lastPing = -1; // エラー時は-1
     }
+  }
+
+  startAutoPing() {
+    // 1秒ごとにping
+    setInterval(() => {
+      this.pingOnce();
+    }, 1000);
   }
 
   getPingMs() {
