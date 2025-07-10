@@ -1,3 +1,4 @@
+// もしこれを使ってずっと0と出るならfps2をお使いください。
 class FPSCounter {
     constructor(runtime) {
         this.runtime = runtime;
