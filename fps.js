@@ -1,19 +1,21 @@
 class FPSCounter {
     constructor(runtime) {
         this.runtime = runtime;
+        this.frames = 0;
         this.fps = 0;
 
-        // 1秒ごとにFPSをセット
+        // 毎秒FPSを計算
         setInterval(() => {
-            // TurboWarpのVMオブジェクトからFPSを取得
-            if (window.vm && window.vm.runtime) {
-                // FPS = 1000 ÷ 1フレームの所要時間（ms）
-                const stepTime = window.vm.runtime.currentStepTime || 16.67; // デフォルト60FPS
-                this.fps = Math.round(1000 / stepTime);
-            } else {
-                this.fps = 0;
-            }
+            this.fps = this.frames;
+            this.frames = 0;
         }, 1000);
+
+        // TurboWarpで1フレームごとにカウント
+        if (runtime) {
+            runtime.on('PROJECT_RUN_STEP', () => {
+                this.frames++;
+            });
+        }
     }
 
     getInfo() {
@@ -35,4 +37,5 @@ class FPSCounter {
     }
 }
 
+// 拡張を登録
 Scratch.extensions.register(new FPSCounter());
